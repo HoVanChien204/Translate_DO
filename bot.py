@@ -10,7 +10,7 @@ from config import BOT_TOKEN, OPENAI_API_KEY, AUTHORIZED_USERS
 
 openai.api_key = OPENAI_API_KEY
 
-async def translate_with_gpt(text, to_lang="en"):
+async def translate_with_gpt(text, to_lang="en", retries=3):
     direction = "sang tiếng Anh" if to_lang == "en" else "sang tiếng Việt"
     prompt = f"""
 Bạn là một trợ lý hỗ trợ khách hàng chuyên nghiệp trong lĩnh vực Facebook Ads, chuyên giải quyết các vấn đề liên quan đến:
@@ -27,12 +27,18 @@ Hãy dịch câu sau {direction} một cách:
 Nội dung cần dịch:
 \"{text}\"
 """
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[{"role": "user", "content": prompt}],
-        temperature=0.3
-    )
-    return response.choices[0].message.content.strip()
+    for attempt in range(retries):
+        try:
+            response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.3
+        )
+            return response.choices[0].message.content.strip()
+        except Exception as e:
+            print(f"[GPT ERROR] Attempt {attempt+1}: {e}")
+            time.sleep(2)
+    return "⚠️ Lỗi khi dịch nội dung. Vui lòng thử lại."
 
 # Gửi inline button khi khách nhắn
 async def handle_incoming(update: Update, context: ContextTypes.DEFAULT_TYPE):
