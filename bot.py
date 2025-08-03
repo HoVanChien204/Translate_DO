@@ -9,7 +9,7 @@ from telegram.ext import (
 )
 from config import BOT_TOKEN, OPENAI_API_KEY, AUTHORIZED_USERS
 
-openai.api_key = OPENAI_API_KEY
+client = openai.OpenAI(api_key=OPENAI_API_KEY)
 
 async def translate_with_gpt(text, to_lang="en", retries=3):
     direction = "sang tiếng Anh" if to_lang == "en" else "sang tiếng Việt"
