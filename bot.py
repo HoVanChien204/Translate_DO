@@ -33,7 +33,7 @@ Nội dung cần dịch:
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": prompt}],
             temperature=0.3
-        )
+            )
             return response.choices[0].message.content.strip()
         except Exception as e:
             print(f"[GPT ERROR] Attempt {attempt+1}: {e}")
