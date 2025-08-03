@@ -1,6 +1,7 @@
 # bot.py
 
 import openai
+import time
 from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import (
     ApplicationBuilder, MessageHandler, ContextTypes,
@@ -29,10 +30,10 @@ Nội dung cần dịch:
 """
     for attempt in range(retries):
         try:
-            response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.3
+            response = client.chat.completions.create(
+                model="gpt-3.5-turbo",
+                messages=[{"role": "user", "content": prompt}],
+                timeout=15
             )
             return response.choices[0].message.content.strip()
         except Exception as e:
