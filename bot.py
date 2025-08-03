@@ -57,9 +57,14 @@ async def handle_admin_reply(update: Update, context: ContextTypes.DEFAULT_TYPE)
     user_id = update.message.from_user.id
     if user_id in AUTHORIZED_USERS:
         text = update.message.text
-        translated = await translate_with_gpt(text, to_lang="en")
-        await context.bot.send_message(chat_id=update.effective_chat.id,
-                                       text=f"{text}\n\n🇬🇧 {translated}")
+
+        translated = await translate_with_gpt(text, to_lang="en")  # ✅ RẤT QUAN TRỌNG
+
+        # Gửi song ngữ (có thể xóa bản gốc nếu muốn)
+        await context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text=f"{text}\n\n🇬🇧 {translated}"
+        )
         await update.message.delete()
 
 # Admin bấm nút "Dịch" → gửi bản dịch riêng
